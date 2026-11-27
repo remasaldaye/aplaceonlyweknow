@@ -1,19 +1,20 @@
-/* Navigation, loader, stars, reveals, back-to-top */
-const PAGES = [
-  ['home', 'Home'], ['story', 'Our Story'], ['someday', 'Someday'], ['letter', 'A Letter'], ['end', 'The End']
-];
+/* Navigation, language toggle, loader, stars, reveals, back-to-top */
+const PAGES = ['home', 'story', 'memories', 'love', 'quiz', 'someday', 'letter', 'end'];
 const menu = $('#menu');
-/* Only link to sections that exist, so nothing is ever broken */
-menu.innerHTML = PAGES.filter(([id]) => document.getElementById(id))
-  .map(([id, label]) => `<a href="#${id}" data-go="${id}">${label}</a>`).join('');
+let curSec = 'home';
+onLang(() => {
+  menu.innerHTML = PAGES.filter(id => document.getElementById(id))
+    .map(id => `<a href="#${id}" data-go="${id}">${esc(ui('nav.' + id))}</a>`).join('');
+  spyMark();
+});
 
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function go(id) {
   const el = document.getElementById(id);
   if (!el) return;
   el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
   menu.classList.remove('open');
   $('#burger').setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('menu-open');
 }
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-go]');
@@ -22,21 +23,27 @@ document.addEventListener('click', e => {
 $('#burger').onclick = () => {
   const o = menu.classList.toggle('open');
   $('#burger').setAttribute('aria-expanded', o);
+  document.body.classList.toggle('menu-open', o);
 };
+$('#langBtn').onclick = () => setLang(LANG === 'en' ? 'ar' : 'en');
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) go(location.hash.slice(1) || 'home'); });
 
-/* Highlight the current page in the nav */
+/* Highlight current page + nav colour */
+function spyMark() { menu.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.go === curSec)); }
 const spy = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
-  menu.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.go === e.target.id));
+  curSec = e.target.id; spyMark();
   $('#nav').dataset.theme = e.target.classList.contains('light') ? 'light' : 'dark';
-}), { threshold: 0.5 });
+}), { threshold: 0.4 });
 document.querySelectorAll('main > section').forEach(s => spy.observe(s));
 
 /* Reveal on scroll */
 const rv = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); }
-}), { threshold: 0.15 });
-document.querySelectorAll('h2, .sub, .t-item, .polaroid').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+}), { threshold: 0.12 });
+window.observeReveals = root => (root || document).querySelectorAll('.rv:not(.in)').forEach(el => rv.observe(el));
+document.querySelectorAll('section:not(.hero) h2, section:not(.hero) > .wrap > .sub').forEach(el => el.classList.add('rv'));
+observeReveals(document);
 
 /* Loader */
 addEventListener('load', () => setTimeout(() => $('#loader').classList.add('done'), 900));
@@ -45,6 +52,18 @@ addEventListener('load', () => setTimeout(() => $('#loader').classList.add('done
 const topBtn = $('#totop');
 addEventListener('scroll', () => topBtn.classList.toggle('show', scrollY > 600), { passive: true });
 topBtn.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+
+/* The End */
+onLang(() => { $('#endText').textContent = tr(END.text); });
+$('#toBeginning').onclick = () => go('home');
+(() => {
+  const g = $('#sceneStars'); let s = '';
+  for (let i = 0; i < 90; i++) {
+    const x = Math.round(Math.random() * 1200), y = Math.round(Math.random() * 380), r = (Math.random() * 1.6 + .4).toFixed(1);
+    s += `<circle class="tw" cx="${x}" cy="${y}" r="${r}" fill="#F0EBE2" style="animation-delay:${(Math.random() * 4).toFixed(1)}s"/>`;
+  }
+  g.innerHTML = s;
+})();
 
 /* Stars */
 (() => {
@@ -61,3 +80,7 @@ topBtn.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }
   };
   addEventListener('resize', size); size(); requestAnimationFrame(draw);
 })();
+
+/* Start */
+initLang();
+observeReveals(document);
