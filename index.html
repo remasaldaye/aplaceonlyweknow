@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Place Only We Know</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400&family=DM+Mono:wght@300&family=Caveat:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="loader" id="loader"><span>A Place Only We Know</span></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a href="#home" class="logo">A Place Only We Know</a>
+  <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button>
+  <nav id="menu"></nav>
+</header>
+
+<main>
+  <section id="home" class="dark hero">
+    <p class="mono">A little world made for you and me</p>
+    <h1>A Place<br>Only We Know</h1>
+    <p class="sub">Somewhere between two souls, a story began.</p>
+    <a href="#story" class="btn" data-go="story">Enter Our World →</a>
+  </section>
+
+  <section id="story" class="light">
+    <div class="wrap">
+      <h2>Every story has its little moments.</h2>
+      <p class="sub">Here are some of ours.</p>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <section id="memories" class="wine">
+    <div class="wrap wide">
+      <h2>Little moments, forever memories.</h2>
+      <p class="sub">Some moments deserve their own little place.</p>
+      <div class="board" id="board"></div>
+      <p class="mono center">Collected moments of us.</p>
+    </div>
+  </section>
+  <!-- Batch 2 and 3 sections (Quiz, Someday, Letter, The End) get added here -->
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <button class="lb-nav prev" id="lbPrev" aria-label="Previous">‹</button>
+  <figure>
+    <div class="lb-img" id="lbImg"></div>
+    <figcaption><span id="lbCap"></span><small class="mono" id="lbDate"></small></figcaption>
+  </figure>
+  <button class="lb-nav next" id="lbNext" aria-label="Next">›</button>
+</div>
+
+<button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<script src="js/data.js"></script>
+<script src="js/memories.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
